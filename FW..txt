@@ -1,0 +1,48 @@
+import time 
+d={}
+def create(key,value,timeout=0): 
+   if key in d:
+        print("error: this key already exists")     
+   else: 
+    	if(key.isalpha()):
+            if len(d)<(1024*1020*1024) and len(value)<=(16*1024*1024):           
+	       l=[value,time.time()+timeout]       
+	         if len(key)<=32: 
+                    d[key]=l
+
+def read(key):
+    if key not in d:
+        print("error: given key does not exist in database. Please enter a valid key")
+    else: 
+       b=d[key]  
+       if b[1]!=0:
+            if time.time()<b[1]: 
+                stri=str(key)+":"+str(b[0])
+                print(stri)
+            else:
+                print("error: time-to-live of",key,"has expired")     
+   	else:
+            stri=str(key)+":"+str(b[0])
+            print(stri)
+def delete(key):
+    if key not in d:
+        print("error: given key does not exist in database. Please enter a valid key")
+    else:
+        b=d[key]
+        if b[1]!=0:
+            if time.time()<b[1]: 
+               del d[key]
+               print("key is successfully deleted")
+            else:
+                print("error: time-to-live of",key,"has expired")
+        else:
+            del d[key]
+            print("key is successfully deleted")
+create("S","SaaS",300)
+read("S")
+delete("S")
+print(d)
+create("X","Hawk-eye",100)
+read("X")
+read("A")
+print(d)
